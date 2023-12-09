@@ -14,9 +14,9 @@ import (
 // 利用消息队列作为服务存活监测手段
 func main() {
 
-	// 负责发送心跳
+	// 服务负责发送心跳
 	go heart.RunHeartBeat()
-	// 负责接收心跳
+	// 调度器负责接收心跳
 	go heart.ListenHeartbeat()
 
 	// 利用负载均衡获取
