@@ -5,9 +5,10 @@
 - 负载均衡算法代码实现
 - 调度器如何维护节点Live方案（参考）
 
+项目托管Github地址：https://github.com/gofish2020/easydispatch
 ## loadbalance
 
-负载均衡算法：随机算法，轮询算法，加权轮询算法
+负载均衡算法：随机算法，轮询算法，加权轮询算法,一致性hash
 
 > 随机算法
 ```go
@@ -150,6 +151,40 @@ func (w *WeigthRoundRobin) Get() (string, error) {
 
 ```
 
+> 一致性hash
+
+```go
+
+func (c *ConsistHash) Add(addrs []string) error {
+	for _, addr := range addrs {
+		for i := 0; i < c.replicas; i++ { // 为了addr散落的更均匀（避免过度倾斜）
+			// 计算hash
+			hashSlot := c.hasher([]byte(strconv.Itoa(i) + addr))
+			// 记录hash槽值
+			c.hashSlots = append(c.hashSlots, hashSlot)
+			// 映射槽值和实际值
+			c.mapped[hashSlot] = addr
+		}
+	}
+	// 排序hash环
+	sort.Sort(c.hashSlots)
+	return nil
+}
+
+func (c *ConsistHash) Get(key string) (string, error) {
+	hashSlot := c.hasher([]byte(key))
+	//二分搜索，找到大于等于 hashSlot的第一个元素索引
+	idx := sort.Search(len(c.hashSlots), func(i int) bool {
+		return c.hashSlots[i] >= hashSlot
+	})
+    // 越界，环就从头开始
+	if idx == len(c.hashSlots) {
+		idx = 0
+	}
+	return c.mapped[c.hashSlots[idx]], nil
+}
+
+```
 
 ## 有效服务维护方案（参考）
 ### 方案一：heart【心跳】

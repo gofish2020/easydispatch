@@ -19,7 +19,7 @@ func (r *Rand) Add(param []string) error {
 	return nil
 }
 
-func (r *Rand) Get() (string, error) {
+func (r *Rand) Get(string) (string, error) {
 	if len(r.addrs) == 0 {
 		return "", ErrNoAddr
 	}

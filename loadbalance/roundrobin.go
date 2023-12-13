@@ -15,7 +15,7 @@ func (r *RoundRobin) Add(param []string) error {
 	return nil
 }
 
-func (r *RoundRobin) Get() (string, error) {
+func (r *RoundRobin) Get(string) (string, error) {
 	if len(r.addrs) == 0 || r.curIdx >= len(r.addrs) {
 		return "", ErrNoAddr
 	}

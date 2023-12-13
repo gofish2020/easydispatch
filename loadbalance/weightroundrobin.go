@@ -33,7 +33,7 @@ func (w *WeigthRoundRobin) Add(param []string) error {
 	return nil
 }
 
-func (w *WeigthRoundRobin) Get() (string, error) {
+func (w *WeigthRoundRobin) Get(string) (string, error) {
 
 	if len(w.weightAddrs) == 0 {
 		return "", ErrNoAddr

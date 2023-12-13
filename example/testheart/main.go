@@ -28,7 +28,7 @@ func main() {
 			for _, v := range heart.GetAddrList() {
 				lb.Add([]string{v})
 			}
-			fmt.Println(lb.Get())
+			fmt.Println(lb.Get(""))
 		}
 
 	}()
